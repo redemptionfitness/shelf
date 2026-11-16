@@ -1,0 +1,834 @@
+<!doctype html>
+<html data-gumroad-launched>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script data-cfasync="false" data-gumroad-sandbox-shim>
+  (function () {
+    function memStorage() {
+      var store = Object.create(null);
+      return {
+        getItem: function (k) { return Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null; },
+        setItem: function (k, v) { store[k] = String(v); },
+        removeItem: function (k) { delete store[k]; },
+        clear: function () { store = {}; },
+        key: function (i) { return Object.keys(store)[i] || null; },
+        get length() { return Object.keys(store).length; }
+      };
+    }
+    ["localStorage", "sessionStorage"].forEach(function (name) {
+      var throws = false;
+      try { void window[name]; } catch (e) { throws = true; }
+      if (throws) {
+        try { Object.defineProperty(window, name, { value: memStorage(), configurable: true }); } catch (e) {}
+      }
+    });
+    var cookieThrows = false;
+    try { void document.cookie; } catch (e) { cookieThrows = true; }
+    if (cookieThrows) {
+      var jar = Object.create(null);
+      try {
+        Object.defineProperty(document, "cookie", {
+          configurable: true,
+          get: function () { return Object.keys(jar).map(function (k) { return k + "=" + jar[k]; }).join("; "); },
+          set: function (v) {
+            var first = String(v).split(";")[0];
+            var eq = first.indexOf("=");
+            if (eq < 1) { return; }
+            jar[first.slice(0, eq).trim()] = first.slice(eq + 1).trim();
+          }
+        });
+      } catch (e) {}
+    }
+  })();
+</script>
+
+    <link rel="stylesheet" href="https://assets.gumroad.com/assets/pages/pages-tailwind-7410b6316ee1.css">
+    
+  </head>
+  <body>
+    
+
+  
+    
+    
+    
+
+    
+  
+  
+    
+
+
+
+
+
+
+<style>
+:root{
+  --bg:#0B0C0F; --bg2:#101218; --card:#16181D; --card2:#1B1E25;
+  --line:rgba(201,162,75,.22); --hair:#23262E;
+  --text:#ECE9E1; --muted:#A7A395; --soft:#C9C5B8;
+  --gold:#C9A24B; --gold-2:#E7CE88; --on-gold:#0B0C0F;
+  --glow:rgba(201,162,75,.16);
+  --shadow:0 24px 60px -28px rgba(0,0,0,.75);
+}
+html[data-theme="light"]{
+  --bg:#F6F3EC; --bg2:#FFFFFF; --card:#FFFFFF; --card2:#F2ECDE;
+  --line:rgba(150,110,40,.30); --hair:#E6DFCF;
+  --text:#191813; --muted:#6C6759; --soft:#3A372E;
+  --gold:#9A7B2E; --gold-2:#B68F3D; --on-gold:#FFFFFF;
+  --glow:rgba(180,140,60,.16);
+  --shadow:0 24px 60px -30px rgba(60,45,15,.30);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+h1,h2,h3,.display,.eyebrow,.btn,.pill,.stat-n{font-family:'RFDisplay',ui-sans-serif,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.eyebrow{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.muted{color:var(--muted)}
+.gold{color:var(--gold)}
+section{position:relative}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;justify-content:center;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:14px;
+  padding:15px 26px;border-radius:10px;cursor:pointer;border:1px solid transparent;
+  transition:transform .18s ease, box-shadow .25s ease, background .2s, color .2s;}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn-gold{background:linear-gradient(180deg,var(--gold-2),var(--gold));color:var(--on-gold);
+  box-shadow:0 10px 26px -10px var(--glow),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 34px -12px var(--glow)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:10px 16px;font-size:12px;border-radius:8px}
+.btn-lg{padding:18px 34px;font-size:16px}
+
+/* nav */
+header.nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(10px);
+  background:var(--bg);background:color-mix(in srgb,var(--bg) 84%,transparent);border-bottom:1px solid var(--hair)}
+.skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--gold);color:var(--on-gold);
+  padding:10px 14px;border-radius:8px;font-weight:700;text-transform:uppercase;font-size:13px}
+.skip:focus{left:12px;top:10px}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;gap:14px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700}
+.brand .mark{width:34px;height:34px;border:1.5px solid var(--gold);border-radius:8px;
+  display:grid;place-items:center;color:var(--gold);font-family:'RFDisplay';font-size:15px;letter-spacing:-1px}
+.brand .bt{font-family:'RFDisplay';letter-spacing:.16em;font-size:13px;text-transform:uppercase}
+.brand .bt small{display:block;font-size:8.5px;letter-spacing:.34em;color:var(--muted);font-weight:700}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.toggle{width:40px;height:40px;border-radius:9px;border:1px solid var(--line);background:transparent;
+  color:var(--text);cursor:pointer;display:grid;place-items:center}
+.toggle:hover{color:var(--gold);border-color:var(--gold)}
+.toggle svg{width:18px;height:18px}
+.toggle .ico-sun{display:none}
+html[data-theme="light"] .toggle .ico-sun{display:block}
+html[data-theme="light"] .toggle .ico-moon{display:none}
+.nav-buy{display:none}
+@media(min-width:680px){.nav-buy{display:inline-flex}}
+
+/* hero */
+.hero{padding:54px 0 40px;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(900px 460px at 78% -8%,var(--glow),transparent 60%)}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:34px;align-items:center;position:relative}
+@media(min-width:900px){.hero-grid{grid-template-columns:0.92fr 1.18fr;gap:48px}}
+.hero h1{font-size:clamp(38px,7vw,66px);line-height:.96;letter-spacing:-.02em;text-transform:uppercase;margin:14px 0 0}
+.hero h1 .b{color:var(--gold)}
+.hero .sub{font-size:clamp(16px,2.4vw,19px);color:var(--soft);margin:18px 0 0;max-width:34em}
+.price-row{display:flex;align-items:center;gap:16px;margin:26px 0 6px;flex-wrap:wrap}
+.price{font-family:'RFDisplay';font-size:40px;color:var(--text);line-height:1}
+.price .cur{color:var(--gold)}
+.price-note{font-size:13px;color:var(--muted);max-width:16em;line-height:1.4}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+.assure{display:flex;gap:18px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted)}
+.assure span{display:inline-flex;align-items:center;gap:7px}
+.assure svg{width:15px;height:15px;color:var(--gold)}
+.hero-art{position:relative}
+.hero-art img{width:100%;height:auto;display:block;border-radius:16px;
+  border:1px solid var(--line);box-shadow:var(--shadow)}
+.hero-art .tagband{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);
+  white-space:nowrap;background:linear-gradient(180deg,var(--gold-2),var(--gold));color:var(--on-gold);
+  font-family:'RFDisplay';font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  padding:8px 16px;border-radius:8px;box-shadow:var(--shadow)}
+
+/* trust strip */
+.trust{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:26px 0}
+.pill{border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--soft);font-weight:700;background:var(--card)}
+.pill b{color:var(--gold)}
+
+/* section heading */
+.sec{padding:58px 0}
+.sec-head{max-width:42em}
+.sec-head h2{font-size:clamp(26px,4.4vw,42px);line-height:1.04;text-transform:uppercase;letter-spacing:-.01em;margin:10px 0 0}
+.sec-head p{color:var(--muted);margin-top:14px;font-size:17px}
+
+/* story */
+.story-grid{display:grid;grid-template-columns:1fr;gap:24px;align-items:start;margin-top:8px}
+@media(min-width:860px){.story-grid{grid-template-columns:1.3fr .7fr;gap:40px}}
+.story p{color:var(--soft);margin-top:14px}
+.pullquote{border-left:3px solid var(--gold);padding:6px 0 6px 20px;margin-top:8px;
+  font-size:20px;line-height:1.45;color:var(--text);font-style:italic}
+.signature{font-family:'RFDisplay';font-style:normal;font-size:15px;letter-spacing:.04em;margin-top:18px}
+.signature small{display:block;color:var(--muted);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+
+/* feature cards */
+.cards{display:grid;grid-template-columns:1fr;gap:16px;margin-top:30px}
+@media(min-width:640px){.cards{grid-template-columns:1fr 1fr}}
+@media(min-width:980px){.cards{grid-template-columns:1fr 1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:22px;
+  transition:transform .2s, border-color .2s, box-shadow .25s;position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;left:0;top:0;height:3px;width:100%;
+  background:linear-gradient(90deg,var(--gold),transparent)}
+.card:hover{transform:translateY(-4px);border-color:var(--line);box-shadow:var(--shadow)}
+.card .ico{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;
+  background:var(--card2);border:1px solid var(--line);color:var(--gold);margin-bottom:14px}
+.card .ico svg{width:22px;height:22px}
+.card h3{font-size:17px;text-transform:uppercase;letter-spacing:.04em}
+.card p{color:var(--muted);font-size:15px;margin-top:8px;line-height:1.55}
+
+/* pillars band */
+.pillars{background:var(--bg2);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+@media(min-width:840px){.pillar-grid{grid-template-columns:repeat(4,1fr)}}
+.pillar{text-align:center;padding:24px 14px;border:1px solid var(--hair);border-radius:14px;background:var(--card)}
+.pillar .pn{width:48px;height:48px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;
+  border:1.5px solid var(--gold);color:var(--gold)}
+.pillar .pn svg{width:24px;height:24px}
+.pillar h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+.pillar p{font-size:12.5px;color:var(--muted);margin-top:5px}
+.tagline-c{text-align:center;margin-top:26px;font-family:'RFDisplay';letter-spacing:.34em;
+  text-transform:uppercase;font-size:13px;color:var(--gold)}
+
+/* who for */
+.forlist{display:grid;grid-template-columns:1fr;gap:12px;margin-top:24px}
+@media(min-width:760px){.forlist{grid-template-columns:1fr 1fr}}
+.fitem{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--hair);
+  border-radius:12px;padding:16px 18px}
+.fitem .chk{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--card2);
+  border:1px solid var(--line);color:var(--gold);display:grid;place-items:center}
+.fitem .chk svg{width:14px;height:14px}
+.fitem p{font-size:15px;color:var(--soft)}
+.fitem b{color:var(--text)}
+
+/* value / cta band */
+.band{background:var(--card2);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 10%,var(--bg2)),var(--bg2));
+  border:1px solid var(--line);border-radius:20px;padding:40px 26px;text-align:center;margin:8px 0}
+.band h2{font-size:clamp(24px,4vw,38px);text-transform:uppercase;line-height:1.05}
+.band p{color:var(--soft);max-width:34em;margin:14px auto 0}
+.band .cta-row{justify-content:center}
+.bigprice{font-family:'RFDisplay';font-size:30px;margin-top:6px}
+.bigprice .cur{color:var(--gold)}
+
+/* FAQ */
+.faq{display:grid;gap:12px;margin-top:26px;max-width:48em}
+details{background:var(--card);border:1px solid var(--hair);border-radius:12px;overflow:hidden}
+details[open]{border-color:var(--line)}
+summary{cursor:pointer;padding:18px 20px;font-family:'RFDisplay';font-size:16px;
+  letter-spacing:.02em;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
+summary::-webkit-details-marker{display:none}
+summary .plus{color:var(--gold);font-size:22px;transition:transform .2s;flex:0 0 auto}
+details[open] summary .plus{transform:rotate(45deg)}
+details .ans{padding:0 20px 18px;color:var(--muted);font-size:15px;line-height:1.6}
+
+/* footer */
+footer{border-top:1px solid var(--hair);padding:40px 0 56px;margin-top:20px}
+.foot-grid{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
+.socials{display:flex;gap:10px;flex-wrap:wrap}
+.socials a{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--hair);border-radius:8px;padding:8px 12px;font-weight:700}
+.socials a:hover{color:var(--gold);border-color:var(--gold)}
+.legal{font-size:12px;color:var(--muted);margin-top:20px;line-height:1.6;max-width:60em}
+
+/* entrance animation (CSS only, content never hidden without it) */
+@keyframes fadeup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.anim{animation:fadeup .7s both}
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.24s}
+@media(prefers-reduced-motion:reduce){.anim{animation:none}html{scroll-behavior:auto}.btn:hover,.card:hover{transform:none}}
+</style>
+
+
+<a href="https://redemptionfitness.gumroad.com/l/monthone/SAVE60?wanted=true" class="skip" rel="noopener noreferrer">Skip to buy</a>
+
+<header class="nav">
+ <div class="wrap nav-in">
+   <div class="brand">
+     <span class="mark">RF</span>
+     <span class="bt">Redemption<small>Fitness</small></span>
+   </div>
+   <div class="nav-actions">
+     <button class="toggle" id="themeBtn" type="button" aria-label="Toggle light and dark mode" aria-pressed="false">
+       <svg class="ico-moon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+       <svg class="ico-sun" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"></path></svg>
+     </button>
+     <a class="btn btn-gold btn-sm nav-buy" href="https://redemptionfitness.gumroad.com/l/monthone/SAVE60?wanted=true" rel="noopener noreferrer" aria-label="Buy MONTH ONE">
+       Get It — <span style="text-decoration:line-through;opacity:.55">$117.50</span> <b>$47</b> <span style="font-size:12px;letter-spacing:.5px">— 60% OFF</span>
+     </a>
+   </div>
+ </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero">
+ <div class="wrap hero-grid">
+   <div class="anim">
+     <span class="eyebrow">Redemption Fitness · 30 Days To Real Results</span>
+     <h1>Month <span class="b">One</span>
+</h1>
+     <p class="sub">You don’t need motivation. You need 30 days, a barbell, and a plan that doesn’t let you quit on yourself. The complete first-month system: the guide, a full Push/Pull/Legs program, the nutrition to grow on, and a tracker that shows your numbers moving.</p>
+     <div class="price-row">
+       <div class="price">
+<span style="text-decoration:line-through;opacity:.55">$117.50</span> <b>$47</b> <span style="font-size:12px;letter-spacing:.5px">— 60% OFF</span>
+</div>
+       <div class="price-note">One-time payment · instant download · yours for life</div>
+     </div>
+     <div class="cta-row" id="buy">
+       <a class="btn btn-gold btn-lg" href="https://redemptionfitness.gumroad.com/l/monthone/SAVE60?wanted=true" rel="noopener noreferrer">Start Month One</a>
+       <a class="btn btn-ghost btn-lg" href="#inside">See What's Inside</a>
+     </div>
+     <div class="assure">
+       <span><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"></path></svg> 4 files · 47 pages, THE STANDARD included</span>
+       <span><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"></path></svg> Instant download</span>
+       <span><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"></path></svg> 30-day money-back guarantee</span>
+     </div>
+   </div>
+   <div class="hero-art anim d2">
+     <img src="https://public-files.gumroad.com/qz3kjjqmlfzphn228137y3pkra7n" alt="MONTH ONE — the cover: day one in grey on the left, day thirty under golden gym light on the right." style="display:block;width:100%;max-width:1120px;height:auto;margin:24px auto 28px;border-radius:12px">
+   </div>
+ </div>
+</section>
+
+<div class="wrap"><div class="trust">
+  <span class="pill"><b>30</b> Days, Day-By-Day</span>
+  <span class="pill"><b>4</b> Rules</span>
+  <span class="pill">Gym Program: <b>Push / Pull / Legs</b></span>
+  <span class="pill">Hard-Day <b>Protocol</b></span>
+  <span class="pill">Muscle-Building <b>Nutrition</b></span><span class="pill"><b>6 Big Lifts</b> Programmed</span><span class="pill">Printable <b>30-Day Tracker</b></span><span class="pill"><b>Money-Back</b> Guarantee</span>
+</div></div>
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- INSIDE (added 2026-09-24 on Joey's yes: the real pages, labeled) -->
+<section class="sec">
+ <div class="wrap">
+   <div class="sec-head anim">
+<span class="eyebrow">A Look Inside</span>
+     <h2>The real pages, before you buy.</h2>
+</div>
+   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px">
+<img src="https://public-files.gumroad.com/2g416qwav1k5onarh070tz00or3q" alt="The 30-day plan, system pages 4-5" loading="lazy" style="display:block;width:100%;height:auto;border-radius:10px"><img src="https://public-files.gumroad.com/tvuso46u8q0ytd5wdp7tzjz7wij3" alt="Push, pull and legs, system pages 13-14" loading="lazy" style="display:block;width:100%;height:auto;border-radius:10px"><img src="https://public-files.gumroad.com/iimaco5dx7k17sie4jw36o7q8j6r" alt="The 30-day tracker, system pages 24 and 27" loading="lazy" style="display:block;width:100%;height:auto;border-radius:10px"><img src="https://public-files.gumroad.com/svzkxykm1l4mwvq3araz6gqtjhm5" alt="The Standard 30 days, habits pages 2 and 5" loading="lazy" style="display:block;width:100%;height:auto;border-radius:10px">
+</div>
+ </div>
+</section>
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- STORY -->
+<section class="sec">
+ <div class="wrap">
+   <div class="sec-head anim">
+<span class="eyebrow">Why Month One</span>
+     <h2>Most programs never get finished. This one does, and you'll have something to show for it.</h2>
+</div>
+   <div class="story-grid">
+     <div class="story anim">
+       <p>Nobody quits the gym because the program was wrong. They stall because nothing they run ever gets finished. Week 1 you think everyone’s watching you. Week 2 you’re sore and
+       slow. Week 3 the motivation you started with is gone and the gym is just a thing on your calendar.</p>
+       <p>That week is where the dropouts happen, and it has nothing to do with your sets and reps. So
+       MONTH ONE handles the whole 30 days: a real gym program built on the basics (squat, bench,
+       deadlift, press, row), the nutrition to grow on, a tracker for all 30 days, and a plan for the day you
+       don’t want to go. I built it out of what actually worked on me when I started at zero. No gimmicks,
+       no fluff, just the iron and a plan.</p>
+       <div class="signature">— Joseph Elia IV<small>Founder, Redemption Fitness</small>
+</div>
+     </div>
+     <div class="anim d2">
+       <div class="pullquote">“The gym doesn't care how you feel today. It only responds to what you do
+       right now, under this weight. That's the most honest thing I've ever found.”</div>
+     </div>
+   </div>
+ </div>
+</section>
+
+<!-- WHAT'S INSIDE -->
+<section class="sec" id="inside">
+ <div class="wrap">
+   <div class="sec-head anim">
+<span class="eyebrow">What You Get</span>
+     <h2>A 30-day system — not a pep talk.</h2>
+     <p>Built to be followed one day at a time, anywhere, starting today.</p>
+</div>
+   <div class="cards">
+     <div class="card anim d1">
+<div class="ico"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5"></path><path d="M3 7l1.5-1.5 3 3L6 10z"></path><path d="M21 17l-1.5 1.5-3-3L18 14z"></path><path d="M14 6l4 4M6 14l4 4"></path></svg></div>
+<h3>The 4 Rules</h3>
+<p>The four rules that run the whole system — simple, non-negotiable, and built to hold you up on the days motivation doesn’t show.</p>
+</div>
+<div class="card anim d2">
+<div class="ico"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="1"></circle></svg></div>
+<h3>The 30-Day Method — Gym Program</h3>
+<p>A complete Push / Pull / Legs program on the proven basics — exact exercises, sets and reps, a form primer so you don’t get hurt, and the progressive-overload rule that makes anyone grow — new lifter or ten years in.</p>
+</div>
+<div class="card anim d3">
+<div class="ico"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 4v3M12 17v3M4 12h3M17 12h3"></path></svg></div>
+<h3>The Hard-Day Protocol</h3>
+<p>Exactly what to do, step by step, on the day you’ve got every reason not to go. Decided in advance so you don’t have to decide when you’re tired.</p>
+</div>
+<div class="card anim d1">
+<div class="ico"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"></path><path d="M21 7h-5M21 7v5"></path></svg></div>
+<h3>Nutrition — Eat To Build</h3>
+<p>The meat-and-potatoes of building muscle: protein targets, simple meals, and how to eat enough to grow — no supplements required, nothing you can’t pronounce.</p>
+</div>
+<div class="card anim d2">
+<div class="ico"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16h16"></path><path d="M8 16v-4M12 16v-7M16 16v-2"></path></svg></div>
+<h3>The 30-Day Tracker + The Hand-Off</h3>
+<p>A printable page for every day — daily box, training log, one check-in line — plus a week-1 vs week-4 page so you can see the numbers move, and The Hand-Off: exactly what changes from day 8 to day 30.</p>
+</div>
+<div class="card anim d3">
+<div class="ico"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3-2 4-2 7a3 3 0 0 0 6 0c0-2-1-3-1-3 2 1 4 3 4 6a7 7 0 0 1-14 0c0-4 4-6 7-10z"></path></svg></div>
+<h3>Progressive Overload, Explained</h3>
+<p>The one rule that actually makes anyone grow: when to add weight, how much, and why the guy adding 5 lbs a week beats the guy chasing a new program every month.</p>
+</div>
+   </div>
+ </div>
+</section>
+
+
+<!-- THE STANDARD -->
+<section class="sec" id="standard">
+ <div class="wrap">
+   <div class="sec-head anim">
+<span class="eyebrow">Also included</span>
+     <h2>THE STANDARD — 30 Days</h2>
+     <p>Ten daily habits, only one of which is training. This is the file that decides whether you are still doing this in March.</p>
+</div>
+   <div class="cards">
+<div class="card anim d1">
+<h3>Ten Habits</h3>
+<p>The seven from Week One plus look at your money, keep your mouth shut about what is hard, and do one thing for someone who cannot pay you back.</p>
+</div>
+<div class="card anim d2">
+<h3>Both Ends Of Your Day</h3>
+<p>Your first thirty minutes and your last thirty minutes written out minute by minute, so there is nothing left to decide when you are tired.</p>
+</div>
+<div class="card anim d3">
+<h3>The Day You Do Not Want To</h3>
+<p>A shortened version of every habit that still counts as a yes, so the streak bends instead of snapping. Day nine is the one that gets people.</p>
+</div>
+</div>
+ </div>
+</section>
+<!-- PILLARS -->
+<section class="sec pillars">
+ <div class="wrap">
+   <div class="sec-head anim" style="text-align:center;margin:0 auto">
+<span class="eyebrow">What We're Built On</span>
+     <h2>Four pillars. One standard.</h2>
+</div>
+   <div class="pillar-grid">
+     <div class="pillar anim d1">
+<div class="pn"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9c2-1 4-1 6 1 1 1 3 1 5 0 2-1 3 0 3 2 0 4-3 7-7 7-5 0-8-3-8-7 0-2 .5-2.5 1-3z"></path><path d="M11 10c-1-2-3-3-5-2"></path></svg></div>
+<h3>Bodybuilding Aesthetics</h3>
+<p>Build a physique you're proud of</p>
+</div>
+<div class="pillar anim d2">
+<div class="pn"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-9-9a4.5 4.5 0 0 1 9-2 4.5 4.5 0 0 1 9 2c-2 4.5-9 9-9 9z"></path></svg></div>
+<h3>Strength &amp; Consistency</h3>
+<p>Show up, add weight, repeat</p>
+</div>
+<div class="pillar anim d3">
+<div class="pn"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7a2.5 2.5 0 0 0-2 4 2.5 2.5 0 0 0 0 4 2.5 2.5 0 0 0 4 1V6a2 2 0 0 0-2 1z"></path><path d="M15 7a2.5 2.5 0 0 1 2 4 2.5 2.5 0 0 1 0 4 2.5 2.5 0 0 1-4 1"></path></svg></div>
+<h3>Mindset &amp; Discipline</h3>
+<p>Train the head, not just the body</p>
+</div>
+<div class="pillar anim d4">
+<div class="pn"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h16M4 18l-1-9 5 4 4-7 4 7 5-4-1 9"></path></svg></div>
+<h3>Your Redemption</h3>
+<p>Starts the day you decide</p>
+</div>
+   </div>
+   <div class="tagline-c anim">Discipline · Purpose · Redemption</div>
+ </div>
+</section>
+
+<!-- WHO FOR -->
+<section class="sec">
+ <div class="wrap">
+   <div class="sec-head anim">
+<span class="eyebrow">Who This Is For</span>
+     <h2>Old-school basics. Thirty days. Anyone can run it.</h2>
+</div>
+   <div class="forlist">
+     <div class="fitem anim">
+<span class="chk"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><p><b>Any lifter who wants a finished 30 days</b> who need structure more than motivation.</p>
+</div>
+<div class="fitem anim">
+<span class="chk"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><p><b>Anyone coming back after years off</b> who wants the basics done right instead of guessing.</p>
+</div>
+<div class="fitem anim">
+<span class="chk"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><p><b>Dads and guys with no spare time</b> who need three sessions a week that actually work.</p>
+</div>
+<div class="fitem anim">
+<span class="chk"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><p><b>Anyone who wants to get big off the basics</b> — first day or tenth year. Squat, bench, deadlift, press, row and real food, run properly for thirty days. New guys get the lifts laid out with a form cue for each; guys who've been spinning their wheels finally get the overload written down instead of guessed at.</p>
+</div>
+<div class="fitem anim">
+<span class="chk"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><p>Anyone who keeps <b>quitting on day 3</b> and needs a plan that expects the hard days.</p>
+</div>
+<div class="fitem anim">
+<span class="chk"><svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><p>Anyone ready to <b>pick a number and start counting</b> — today.</p>
+</div>
+   </div>
+ </div>
+</section>
+
+<!-- WHAT YOU DOWNLOAD + GUARANTEE -->
+<section class="sec">
+ <div class="wrap">
+   <div class="sec-head anim">
+     <span class="eyebrow">What Lands In Your Inbox</span>
+     <h2>Four files. Everything you need for thirty days.</h2>
+   </div>
+   <div class="story-grid">
+     <div class="story anim">
+       <p><b>1 · MONTH ONE — The Complete System.</b> 30 pages. The 30 days week by week, the full gym program (Push / Pull / Legs) with the six big lifts at a glance and a one-cue form primer, the nutrition to build on with a Sunday food check, The Hand-Off from day 8 to day 30, the tracker, and the protocol for the day you don't want to go. New to the lifts? The illustrated setup for all six is in THE FIRST 7, free.</p>
+       <p><b>2 · The 30-Day Tracker.</b> 9 pages, its own printable file, so it lives on the fridge or your phone instead of buried in a PDF you have to scroll. The starting line, the daily streak, the workout log, the weekly check-in.</p>
+       <p><b>3 · After Day 30 + Your Guarantee.</b> 3 pages. Read it on day 30. What changes after month one, exactly how to step up, and the guarantee in writing.</p>
+       <p><b>4 · THE STANDARD — 30 Days.</b> 5 pages. Ten daily habits, your first and last thirty minutes written out, the half-day plan, a weekly scorecard and a 30-box wall chart.</p>
+     </div>
+     <div class="anim d2">
+       <div class="pullquote" style="border-left:3px solid var(--gold,#c9a227)">
+         <b style="display:block;letter-spacing:.18em;font-size:12px;text-transform:uppercase;margin-bottom:10px">The 30-Day Guarantee</b>
+         Run all 30 days and track it. If you get to day 30 having done the work and you're not stronger than you were on day one, email me and I'll refund you in full — and you keep every file. No forms, no hoops.
+       </div>
+     </div>
+   </div>
+ </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="sec"><div class="wrap">
+  <div class="band anim">
+    <span class="eyebrow">Day One Starts Today</span>
+    <h2>Pick your number. Start counting.</h2>
+    <p>Download it. Train today. Thirty days from now you’ve got the numbers to prove it.</p>
+    <div class="bigprice">
+<span style="text-decoration:line-through;opacity:.55">$117.50</span> <b>$47</b> <span style="font-size:12px;letter-spacing:.5px">— 60% OFF</span> <span class="muted" style="font-size:14px;font-family:ui-sans-serif">one-time</span>
+</div>
+    <div class="cta-row" style="margin-top:18px">
+      <a class="btn btn-gold btn-lg" href="https://redemptionfitness.gumroad.com/l/monthone/SAVE60?wanted=true" rel="noopener noreferrer">Start Month One — <span style="text-decoration:line-through;opacity:.55">$117.50</span> <b>$47</b> <span style="font-size:12px;letter-spacing:.5px">— 60% OFF</span></a>
+    </div>
+  </div>
+</div></section>
+
+<!-- FAQ -->
+<section class="sec"><div class="wrap">
+  <div class="sec-head anim">
+<span class="eyebrow">Before You Buy</span><h2>Questions, answered.</h2>
+</div>
+  <div class="faq">
+    <details><summary>Do I need a gym?<span class="plus">+</span></summary><div class="ans">Yes — and that’s the point. Real results come from real load: barbells, dumbbells, machines. Any basic gym has everything the program needs. The membership is the investment — this plan makes sure you know exactly what to do inside it.</div></details><details><summary>What exactly do I get?<span class="plus">+</span></summary><div class="ans">Four PDFs, instantly: MONTH ONE — The Complete System (30 pages: the plan, the 30-Day Method gym program with the nutrition, The Hand-Off and the tracker), the 30-Day Tracker as its own print file (9 pages), THE STANDARD — 30 Days (5 pages), and After Day 30 (3 pages). Yours for life.</div></details><details><summary>I’m brand new to working out. Can I do this?<span class="plus">+</span></summary><div class="ans">Yes. Week one starts light on purpose, each session is written out, and every big lift has its form cue. Want each lift illustrated step by step first? THE FIRST 7 is free. And if you’re not new — if you’ve been training a while without much to show for it — this is the old-school reset: the basic lifts, real food, and overload actually written down.</div></details><details><summary>How many days a week is it?<span class="plus">+</span></summary><div class="ans">Three to start — Push, Pull, Legs, one round a week. That’s enough to grow and few enough that you’ll actually keep it. If you’re feeling good by week 3 the program shows you how to run the rotation twice for up to 6 days.</div></details><details><summary>Still not sure?<span class="plus">+</span></summary><div class="ans">There’s a 30-day money-back guarantee — run the first week and see. Or DM the word REDEMPTION on Instagram @redemption_fit215 and ask me anything first. I’ll give it to you straight.</div></details>
+  </div>
+</div></section>
+</main>
+
+<footer>
+ <div class="wrap">
+   <div class="foot-grid">
+     <div class="brand">
+<span class="mark">RF</span><span class="bt">Redemption<small>Fitness</small></span>
+</div>
+     <div class="socials">
+       <a href="https://instagram.com/redemption_fit215" rel="noopener noreferrer">Instagram</a>
+       <a href="https://tiktok.com/@redemption_fit" rel="noopener noreferrer">TikTok</a>
+       <a href="https://www.facebook.com/profile.php?id=61590378495229" rel="noopener noreferrer">Facebook</a>
+       <a href="https://x.com/fit_redemption" rel="noopener noreferrer">X</a>
+       <a href="https://www.snapchat.com/add/redemption_fit1" rel="noopener noreferrer">Snapchat</a>
+     </div>
+     <a class="btn btn-gold btn-sm" href="https://redemptionfitness.gumroad.com/l/monthone/SAVE60?wanted=true" rel="noopener noreferrer">Get It — <span style="text-decoration:line-through;opacity:.55">$117.50</span> <b>$47</b> <span style="font-size:12px;letter-spacing:.5px">— 60% OFF</span></a>
+   </div>
+   <p class="legal">© 2026 Redemption Fitness. MONTH ONE is a single-user license — please don’t copy, resell, or redistribute it. This program is for educational purposes and is not medical advice; consult a physician before starting any exercise or nutrition program.</p>
+ </div>
+</footer>
+
+<script>
+(function(){
+  try{
+    var root=document.documentElement, btn=document.getElementById('themeBtn');
+    var sysDark = !window.matchMedia || window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(sysDark ? 'dark' : 'light');
+    function setTheme(t){ root.setAttribute('data-theme',t);
+      if(btn) btn.setAttribute('aria-pressed', t==='light' ? 'true':'false'); }
+    if(btn) btn.addEventListener('click',function(){
+      setTheme(root.getAttribute('data-theme')==='light' ? 'dark':'light'); });
+  }catch(e){}
+})();
+</script>
+
+
+    <script data-cfasync="false">
+      document.addEventListener("click", function (e) {
+        var target = e.target;
+        var buyButton = target && target.closest ? target.closest('[data-gumroad-action="buy"]') : null;
+        if (!buyButton) return;
+        e.preventDefault();
+
+        var params = {};
+        try {
+          params = JSON.parse(buyButton.dataset.gumroadCheckoutParams || "{}");
+        } catch (_e) {}
+
+        parent.postMessage({type:"gumroad:checkout",params:params},"*");
+      }, true);
+    </script>
+  
+
+
+    <script data-cfasync="false">
+      document.addEventListener("click", function (e) {
+        var target = e.target;
+        var buyButton = target && target.closest ? target.closest('[data-gumroad-action="buy"]') : null;
+        if (!buyButton) return;
+        e.preventDefault();
+
+        var params = {};
+        try {
+          params = JSON.parse(buyButton.dataset.gumroadCheckoutParams || "{}");
+        } catch (_e) {}
+
+        parent.postMessage({type:"gumroad:checkout",params:params},"*");
+      }, true);
+    </script>
+    <script data-cfasync="false" data-gumroad-navigation-bridge>
+  (function () {
+    var STORE_HOSTNAMES = ["redemptionfitness.gumroad.com"];
+    var GUMROAD_NAV_HOSTS = ["gumroad.com","app.gumroad.com"];
+    var GUMROAD_NAV_PATHS = ["/library","/checkout"];
+    function gumroadNavigationTarget(url, storeHostnames) {
+      if (storeHostnames.indexOf(url.hostname) !== -1) return url.href;
+      if (GUMROAD_NAV_HOSTS.indexOf(url.hostname) === -1) return null;
+      var path = url.pathname.replace(/\/+$/, "");
+      if (GUMROAD_NAV_PATHS.indexOf(path) === -1) return null;
+      return url.origin + path;
+    }
+    document.addEventListener("click", function (e) {
+      // Only plain left-clicks: modified clicks (new tab, etc.) keep
+      // the browser's default handling.
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      // Viewed directly (not framed) there is no trusted parent to ask,
+      // so leave the click alone.
+      if (window.parent === window) return;
+      var link = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+      if (!link) return;
+      var target = (link.getAttribute("target") || "").toLowerCase();
+      if (target && target !== "_self") return;
+      if (link.hasAttribute("download")) return;
+      var url;
+      try { url = new URL(link.getAttribute("href"), document.baseURI); } catch (_err) { return; }
+      if (url.protocol !== "https:" && url.protocol !== "http:") return;
+      var destination = gumroadNavigationTarget(url, STORE_HOSTNAMES);
+      if (destination === null) return;
+      // Same-page fragment links should scroll within the iframe, not
+      // reload the profile at the top level.
+      var here = new URL(document.baseURI);
+      if (url.hash && url.pathname === here.pathname && url.search === here.search && url.hostname === here.hostname) return;
+      e.preventDefault();
+      parent.postMessage({ type: "gumroad:navigate", url: destination }, "*");
+    }, true);
+  })();
+</script>
+
+    <script data-cfasync="false" data-gumroad-background-bridge>
+  (function () {
+    // Viewed directly (not framed) there is no wrapper to color.
+    if (window.parent === window) return;
+    function colorAlpha(color) {
+  if (!color || color === "transparent") return 0;
+  var body = color.match(/\(([^)]*)\)\s*$/);
+  if (!body) return color.indexOf("(") === -1 ? 1 : null;
+  var parts = body[1].split("/");
+  var alpha = parts.length > 1 ? parts[parts.length - 1] : null;
+  if (alpha === null) {
+    var channels = body[1].split(",");
+    if (channels.length > 3) alpha = channels[3];
+  }
+  if (alpha === null) return 1;
+  var value = parseFloat(alpha);
+  if (!isFinite(value)) return null;
+  return alpha.indexOf("%") === -1 ? value : value / 100;
+}
+function opaque(color) {
+  return colorAlpha(color) === 1;
+}
+
+    function flatRootPaint(style) {
+      return style.opacity === "1" &&
+        style.filter === "none" &&
+        style.clipPath === "none" &&
+        style.maskImage === "none" &&
+        (!style.webkitMaskImage || style.webkitMaskImage === "none") &&
+        (!style.maskBorderSource || style.maskBorderSource === "none") &&
+        (!style.webkitMaskBoxImage || style.webkitMaskBoxImage === "none") &&
+        style.mixBlendMode === "normal" &&
+        style.display !== "none";
+    }
+    function establishesContainment(style) {
+      return style.contain !== "none" ||
+        (style.contentVisibility && style.contentVisibility !== "visible") ||
+        (style.containerType && style.containerType !== "normal");
+    }
+    function paint(color, colorScheme) {
+      return { color: color, colorScheme: colorScheme };
+    }
+    function schemeBackplate(style) {
+      if (!style.colorScheme || style.colorScheme === "normal") return paint(null, null);
+      // The trusted wrapper resolves Canvas. Probing here would alter the
+      // seller's DOM, including :last-child selectors.
+      return paint(null, style.colorScheme);
+    }
+    function canvasPaint() {
+      var rootStyle = window.getComputedStyle(document.documentElement);
+      if (!flatRootPaint(rootStyle)) return paint(null, null);
+      var root = rootStyle.backgroundColor;
+      var rootAlpha = colorAlpha(root);
+      if (rootStyle.backgroundImage !== "none") return paint(null, null);
+      if (rootAlpha === 1) return paint(root, null);
+      if (rootAlpha !== 0 || !document.body) return paint(null, null);
+      var bodyStyle = window.getComputedStyle(document.body);
+      if (
+        bodyStyle.display === "none" ||
+        establishesContainment(rootStyle) ||
+        establishesContainment(bodyStyle)
+      ) return schemeBackplate(rootStyle);
+      var body = bodyStyle.backgroundColor;
+      if (bodyStyle.backgroundImage !== "none") return paint(null, null);
+      if (opaque(body)) return paint(body, null);
+      if (colorAlpha(body) !== 0) return paint(null, null);
+      return schemeBackplate(rootStyle);
+    }
+    var reportedColor = null;
+    var reportedColorScheme = null;
+    var hasReported = false;
+    function report(force) {
+      var current = canvasPaint();
+      if (
+        !force &&
+        hasReported &&
+        current.color === reportedColor &&
+        current.colorScheme === reportedColorScheme
+      ) return;
+      reportedColor = current.color;
+      reportedColorScheme = current.colorScheme;
+      hasReported = true;
+      // The first null matters after an iframe reload: its wrapper may
+      // still hold the previous document's tint.
+      parent.postMessage({
+        type: "gumroad:background",
+        color: current.color,
+        colorScheme: current.colorScheme
+      }, "*");
+    }
+    window.addEventListener("message", function (e) {
+      var d = e.data;
+      if (e.source === parent && d && d.type === "gumroad:background:request") report(true);
+    });
+    var queued = false;
+    var queuedForce = false;
+    function queueReport(force) {
+      if (force === true) queuedForce = true;
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () {
+        var shouldForce = queuedForce;
+        queued = false;
+        queuedForce = false;
+        report(shouldForce);
+      });
+    }
+    // Ignore ordinary DOM churn; only selectors and stylesheets can move
+    // the canvas color.
+    function stylesheetNode(node) {
+      var name = node && node.localName;
+      return name === "style" || name === "link";
+    }
+    // A link repaints after insertion, when its own load event fires.
+    function watchStylesheetLoad(node) {
+      if (node && node.localName === "link") node.addEventListener("load", queueReport);
+    }
+    function eachStylesheet(node, fn) {
+      if (!node) return;
+      if (stylesheetNode(node)) fn(node);
+      if (!node.querySelectorAll) return;
+      var found = node.querySelectorAll("style,link");
+      for (var i = 0; i < found.length; i++) fn(found[i]);
+    }
+    function affectsCanvas(records) {
+      var affects = false;
+      for (var i = 0; i < records.length; i++) {
+        var record = records[i];
+        if (record.type === "attributes") {
+          if (
+            record.target === document.documentElement ||
+            record.target === document.body ||
+            stylesheetNode(record.target)
+          ) affects = true;
+          // href swapped on a <link> that is already in the document — the
+          // new sheet lands late too.
+          if (stylesheetNode(record.target)) watchStylesheetLoad(record.target);
+        }
+        if (stylesheetNode(record.target)) affects = true;
+        if (stylesheetNode(record.target.parentNode)) affects = true;
+        for (var j = 0; j < record.addedNodes.length; j++) {
+          eachStylesheet(record.addedNodes[j], function (sheet) {
+            affects = true;
+            watchStylesheetLoad(sheet);
+          });
+        }
+        for (var k = 0; k < record.removedNodes.length; k++) {
+          eachStylesheet(record.removedNodes[k], function () { affects = true; });
+        }
+      }
+      return affects;
+    }
+    report();
+    // After load the stylesheet and any seller scripts have applied, so
+    // this is the first reading that reflects the finished page.
+    window.addEventListener("load", queueReport);
+    try {
+      new MutationObserver(function (records) {
+        if (affectsCanvas(records)) queueReport();
+      }).observe(document.documentElement, {
+        attributes: true,
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+    } catch (_err) {}
+    try {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+        // The declared scheme can stay "dark light" while Canvas changes.
+        queueReport(true);
+      });
+    } catch (_err) {}
+    // CSSOM writes emit no mutation, so poll a clean style tree as a backstop.
+    try {
+      setInterval(function () {
+        if (!document.hidden) queueReport();
+      }, 1000);
+      document.addEventListener("visibilitychange", queueReport);
+    } catch (_err) {}
+  })();
+</script>
+
+    
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"5070e21320304a1ba2b0a42ce9682840","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
